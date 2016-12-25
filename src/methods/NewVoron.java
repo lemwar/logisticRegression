@@ -1,3 +1,6 @@
+package methods;
+import utils.Utils;
+
 public class NewVoron
 {
 

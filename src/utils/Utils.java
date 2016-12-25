@@ -1,3 +1,4 @@
+package utils;
 import java.util.Random;
 
 public class Utils
@@ -17,6 +18,20 @@ public class Utils
 			X[i + n / 2][1] = X[i][2];
 			X[i + n / 2][2] = X[i][1];
 
+		}
+		return X;
+	}
+	
+	public static double[][] getNormalSelection(int n, double a, double b)
+	{
+		Random rnd = new Random();
+		double[][] X = new double[n][3];
+		for (int i = 0; i < n; i++)
+		{
+			// rndNumber = rnd.nextGaussian()+12;
+			X[i][0] = 1;
+			X[i][1] = rnd.nextGaussian() + a;
+			X[i][2] = rnd.nextGaussian() + b;
 		}
 		return X;
 	}
