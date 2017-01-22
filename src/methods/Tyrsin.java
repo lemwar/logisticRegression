@@ -3,7 +3,6 @@ package methods;
 import java.util.Random;
 
 import utils.Claster;
-import utils.Utils;
 
 public class Tyrsin
 {
@@ -15,8 +14,8 @@ public class Tyrsin
 	static double [] d;
 	static double [] s;
 	
-	static double [] b0;
-	static double [] b;
+	//static double [] b0;
+	//static double [] b;
 	
 	static double findQ(Claster X1, Claster X2, double [] b)
 	{
@@ -37,7 +36,7 @@ public class Tyrsin
 			}
 			
 			double [][] arg2 = utils.Utils.matrixMultiply(bT, x);
-			double arg = (arg2[0][0]*X1.getY());
+			double arg = (-arg2[0][0]*X1.getY());
 			
 			Q += Math.log(1+Math.exp(arg));
 		}
@@ -52,7 +51,7 @@ public class Tyrsin
 			}
 			
 			double [][] arg2 = utils.Utils.matrixMultiply(bT, x);
-			double arg = (arg2[0][0]*X2.getY());
+			double arg = (-arg2[0][0]*X2.getY());
 			
 			Q += Math.log(1+Math.exp(arg));
 			//System.out.println(Math.log(1+Math.exp(arg)));
@@ -64,18 +63,29 @@ public class Tyrsin
 	static double[] getVectorB0()
 	{
 		double[] b0 = new double [M];
-		double sumSquareS = 0;
+
+		for(int i = 1; i < M; i++)
+		{
+			b0[0] -= x0[i]*d[i];
+			b0[i] = d[i];
+		}
+		
+		
+		
+		double sumSquareB0 = 0;
 		for (int i = 0; i < M; i++)
 		{
-			sumSquareS += Math.pow(s[i], 2);
+			sumSquareB0 += Math.pow(b0[i], 2);
 		}
-		double lengthS = Math.sqrt(sumSquareS);
+		double lengthB0 = Math.sqrt(sumSquareB0);
 		
 		for (int i = 0; i < M; i++)
 		{
-			b0[i] = s[i]/lengthS;
+			b0[i] = b0[i]/lengthB0;
 		}
 		return b0;
+		
+		
 	}
 	
 	static double [] getVectorD()
@@ -88,19 +98,17 @@ public class Tyrsin
 		return d;
 	}
 	
+	@Deprecated
 	static double[] getVectorS()
 	{
 		double [] s = new double [M];
 		
-		for (int i = 0; i < M; i++)
-		{
-			s[0] += d[i] * x0[i];
-		}
+		s[0] = 0;
 		
-		for (int i = 1; i < M; i++)
+		for(int i = 1; i < M; i++)
 		{
-			s[i] = d[i];
-		}	
+			s[i] = d[M-i];
+		}
 		return s;
 	}
 	
@@ -115,6 +123,17 @@ public class Tyrsin
 		
 		return x0;
 	}
+	
+	static double getVectorLength(double [] v)
+	{
+		double sumSquareV = 0;
+		for (int i = 0; i < M; i++)
+		{
+			sumSquareV += Math.pow(v[i], 2);
+		}
+		double lengthV = Math.sqrt(sumSquareV);
+		return lengthV;
+	}
 
 	public static void startMethod(Claster X1, Claster X2, double error) 
 	{
@@ -128,10 +147,10 @@ public class Tyrsin
 		d = getVectorD();
 		
 		//find vector S
-		s = getVectorS();
+		//s = getVectorS();
 		
 		//Find b0 - unit vector S
-		b0 = getVectorB0();
+		double [] b0 = getVectorB0();
 		System.out.println("\nCoefficient b0:");
 		for (int i = 0; i < M; i++)
 		{
@@ -139,37 +158,51 @@ public class Tyrsin
 		}
 		
 		//Find vector b
-		double [] p = new double [M];
-		double [] bLast = b0;
-		b = b0;
+		//double [] p = new double [M];
+		//double [] bLast = b0;
+		double [] b = b0;
+		double lengthB = getVectorLength(b);
+		
+		//find h
+		double h = 0;
+		if (X1.getMaxAbsX() >= X2.getMaxAbsX())
+			h = X1.getMaxAbsX();
+		else
+			h = X2.getMaxAbsX();
+		System.out.println("h = " + h);
+		
 		double Q = findQ(X1, X2, b);
 		System.out.println("\nQ = " + Q);
-		for(int k = 0; k < 1 /*|| (Math.abs(findQ(X1, X2, b) - findQ(X1, X2, bLast)) > error && k > 0)*/; k++)
+		
+		for(double k = 1; k < h /*|| (Math.abs(findQ(X1, X2, b) - findQ(X1, X2, bLast)) > error && k > 0)*/; 
+				k = k + h / (X1.getClasterSize() + X2.getClasterSize()))
 		{
-			for(int l = 0; l < 10; l++)
+			for(int l = 0; l < 1000; l++)
 			{
-				Q = findQ(X1, X2, b);
+				//Q = findQ(X1, X2, b);
 				double[] bNew = new double [M];
 				Random rnd = new Random();
 				for (int i = 0; i < M; i++)
 				{
-					bNew[i] = b[i] + rnd.nextGaussian();
+					bNew[i] = ((b[i] + h * rnd.nextGaussian())/lengthB)*k;
 				}
+				
 				if(Q > findQ(X1, X2, bNew))
 				{
 					b = bNew;
-
+					lengthB = getVectorLength(b);
 					Q = findQ(X1, X2, b);
-					System.out.println("\nQ = " + Q);
+					System.out.println("\nQ = " + Q + " k = " + k);
 				}
 
 			}
 		}
 
 		System.out.println("\nCoefficient b:");
-		for (int i = 0; i < M; i++)
+		for (int i = 0; i < M-1; i++)
 		{
-			System.out.println(b[i]);
+			System.out.print(b[i] + ",");
 		}
+		System.out.print(b[M-1]);
 	}
 }

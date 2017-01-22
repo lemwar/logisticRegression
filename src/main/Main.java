@@ -12,7 +12,7 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		int N = 4;
+		int N = 20;
 		double error = 0.01;
 		double[][] initialX;
 		int numberOfIteration = 0;
@@ -30,8 +30,8 @@ public class Main
 		
 		//initialX = new double[][] {{1, 4, 1},{1, 3, 1},{1, 1, 3},{1, 1, 4}};
 		
-		//Claster X1 = new Claster(new double[][] {{1, 4, 1},{1, 3, 1}}, 1, M);
-		//Claster X2 = new Claster(new double[][] {{1, 1, 4},{1, 1, 3}}, -1, M);
+		//Claster X1 = new Claster(new double[][] {{1, 4.97, 0.06},{1, 3.92, 1.82}}, 1, M);
+		//Claster X2 = new Claster(new double[][] {{1, 1.52, 6.69},{1, 1.25, 6.62}}, -1, M);
 		
 		Claster X1 = new Claster(Utils.getNormalSelection(N/2, 5, 2), 1, M);
 		Claster X2 = new Claster(Utils.getNormalSelection(N/2, 2, 5), -1, M);

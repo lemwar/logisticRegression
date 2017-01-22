@@ -74,7 +74,8 @@ public class Utils
 			{
 				for (int k = 0; k < o; k++)
 				{
-					res[i][j] += A[i][k] * B[k][j];
+					double temp = A[i][k] * B[k][j];
+					res[i][j] += temp;
 				}
 			}
 		}
