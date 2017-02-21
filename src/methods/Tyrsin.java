@@ -135,7 +135,7 @@ public class Tyrsin
 		return lengthV;
 	}
 
-	public static void startMethod(Claster X1, Claster X2, double error) 
+	public static double[] startMethod(Claster X1, Claster X2, double error) 
 	{
 		M = X1.getNumberOfIndications();
 		
@@ -158,8 +158,6 @@ public class Tyrsin
 		}
 		
 		//Find vector b
-		//double [] p = new double [M];
-		//double [] bLast = b0;
 		double [] b = b0;
 		double lengthB = getVectorLength(b);
 		
@@ -179,7 +177,6 @@ public class Tyrsin
 		{
 			for(int l = 0; l < 1000; l++)
 			{
-				//Q = findQ(X1, X2, b);
 				double[] bNew = new double [M];
 				Random rnd = new Random();
 				for (int i = 0; i < M; i++)
@@ -198,11 +195,16 @@ public class Tyrsin
 			}
 		}
 
-		System.out.println("\nCoefficient b:");
+		System.out.println("\n\nCoefficient b:");
+		System.out.println("\n\n");
 		for (int i = 0; i < M-1; i++)
 		{
 			System.out.print(b[i] + ",");
 		}
-		System.out.print(b[M-1]);
+		System.out.print(b[M-1] + "\n");
+		
+		return b;
 	}
+	
+	
 }

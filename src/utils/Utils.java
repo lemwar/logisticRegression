@@ -30,8 +30,8 @@ public class Utils
 		{
 			// rndNumber = rnd.nextGaussian()+12;
 			X[i][0] = 1;
-			X[i][1] = rnd.nextGaussian() + a;
-			X[i][2] = rnd.nextGaussian() + b;
+			X[i][1] = rnd.nextGaussian()/2 + a;
+			X[i][2] = rnd.nextGaussian()/2 + b;
 		}
 		return X;
 	}
